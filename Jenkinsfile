@@ -45,15 +45,13 @@ pipeline {
                 """
             }
         }
-
-        stage('Cleanup') {
-            steps {
-                sh 'docker image prune -f'
-            }
-        }
     }
 
     post {
+        always {
+            // Reclaims disk space after every build, success or failure
+            sh 'docker image prune -f'
+        }
         success {
             echo "Successfully deployed Dockerized Django app to AWS!"
         }
