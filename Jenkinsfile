@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        // Correct path to your project folder
         PROJECT_DIR = "/home/ubuntu/Jenkins-Polls"
     }
 
@@ -49,7 +50,8 @@ pipeline {
 
     post {
         always {
-            // Reclaims disk space after every build, success or failure
+            // Automatically clears the workspace and old images to keep disk space free
+            cleanWs()
             sh 'docker image prune -f'
         }
         success {
