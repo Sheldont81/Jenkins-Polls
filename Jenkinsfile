@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_DIR = "/home/ubuntu/django_polls"
+        PROJECT_DIR = "/home/ubuntu/Jenkins-Polls"
     }
 
     triggers {
