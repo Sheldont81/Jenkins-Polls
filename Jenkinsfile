@@ -3,7 +3,7 @@ pipeline {
     environment {
         PROJECT_DIR = "/home/ubuntu/Jenkins-Polls"
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        IMAGE_NAME = "sheldont81/jenkins-polls"
+        IMAGE_NAME = "sheldont81/django-polls"
     }
     triggers {
         githubPush()
