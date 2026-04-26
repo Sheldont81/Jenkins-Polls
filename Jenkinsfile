@@ -26,13 +26,14 @@ pipeline {
             }
         }
         stage('Push to Docker Hub') {
-            steps {
-                sh """
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                    docker push ${IMAGE_NAME}:latest
-                """
-            }
+    	    steps {
+        	sh '''
+                   echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u sheldont81 --password-stdin
+            	   docker push sheldont81/django-polls:latest
+             '''
         }
+    }
+
         stage('Deploy') {
             steps {
                 sh """
