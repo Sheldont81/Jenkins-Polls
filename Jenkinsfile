@@ -1,15 +1,11 @@
 pipeline {
     agent any
-
     environment {
-        // Correct path to your project folder
         PROJECT_DIR = "/home/ubuntu/Jenkins-Polls"
     }
-
     triggers {
         githubPush()
     }
-
     stages {
         stage('Update Code') {
             steps {
@@ -19,41 +15,39 @@ pipeline {
                 """
             }
         }
-
         stage('Build and Deploy') {
             steps {
                 sh """
                     cd ${PROJECT_DIR}
-                    docker-compose up -d --build
+                    docker stop django_app nginx_proxy 2>/dev/null || true
+                    docker rm django_app nginx_proxy 2>/dev/null || true
+                    docker compose up -d --build
                 """
             }
         }
-
         stage('Run Migrations') {
             steps {
                 sh """
                     cd ${PROJECT_DIR}
-                    docker-compose exec -T web python manage.py migrate --noinput
+                    docker compose exec -T web python manage.py migrate --noinput
                 """
             }
         }
-
         stage('Collect Static Files') {
             steps {
                 sh """
                     cd ${PROJECT_DIR}
-                    docker-compose exec -T web python manage.py collectstatic --noinput
+                    docker compose exec -T web python manage.py collectstatic --noinput
                 """
             }
         }
-    }
-
-    post {
-        always {
-            // Automatically clears the workspace and old images to keep disk space free
-            cleanWs()
-            sh 'docker image prune -f'
+        stage('Cleanup') {
+            steps {
+                sh 'docker image prune -f'
+            }
         }
+    }
+    post {
         success {
             echo "Successfully deployed Dockerized Django app to AWS!"
         }
